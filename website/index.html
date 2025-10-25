@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navigation Bar</title>
+    <link rel="stylesheet" href="./style/css/stylesheet.css">
+</head>
+<body>
+    <div class="nav-container">
+        <div class="nav-bar">
+
+
+            <!-- Brush -->
+            <div class="tool-group">
+                <div class="tool-icon">
+                    <img src="./style/images/brush.png" alt="Brush" class="tool-image">
+                </div>
+                <div class="counter-controls">
+                    <button class="counter-btn" onclick="decrementBrush()">‹</button>
+                    <input type="text" class="counter-display" id="brushSize" value="2" readonly>
+                    <button class="counter-btn" onclick="incrementBrush()">›</button>
+                </div>
+            </div>
+
+
+            <!-- Eraser -->
+            <div class="tool-group">
+                <div class="tool-icon">
+                    <img src="./style/images/eraser.png" alt="Eraser" class="tool-image">
+                </div>
+                <div class="counter-controls">
+                    <button class="counter-btn" onclick="decrementEraser()">‹</button>
+                    <input type="text" class="counter-display" id="eraserSize" value="2" readonly>
+                    <button class="counter-btn" onclick="incrementEraser()">›</button>
+                </div>
+            </div>
+
+
+            
+            <div class="divider"></div>
+
+
+            <!-- Color -->
+            <div class="color-selector">
+                <div class="color-controls">
+                    <button class="nav-btn" onclick="previousColor()">‹</button>
+                    <div class="color-display" id="colorDisplay"></div>
+                    <button class="nav-btn" onclick="nextColor()">›</button>
+                </div>
+                <div class="color-label" id="colorLabel">COLOR 1/8</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="./style/script/javascript.js"></script>
+</body>
+</html>
