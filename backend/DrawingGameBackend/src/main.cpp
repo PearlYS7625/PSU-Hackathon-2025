@@ -2,10 +2,21 @@
 #include <Wire.h>
 #include <Adafruit_MPU6050.h>
 #include <Adafruit_Sensor.h>
+#include <WiFi.h>
+#include "WebServer.h"
+#include <DNSServer.h>
+
 
 Adafruit_MPU6050 mpu;
 
-void setup(void) {
+DNSServer dnsServer;
+WebServer server(80);
+
+void handleRoot(){
+  server.send(200, "text", "Test");
+}
+
+void setup() {
   Serial.begin(115200);
   while (!Serial)
     delay(10); // will pause Zero, Leonardo, etc until serial console opens
@@ -21,6 +32,22 @@ void setup(void) {
   }
   Serial.println("MPU6050 Found!");
 
+
+//Start of the website on the 32
+    WiFi.mode(WIFI_AP);
+    WiFi.softAP("Draw");
+    WiFi.ap
+
+
+    dnsServer.start(53, "*", WiFi.softAPIP());
+    server.on("/", handleRoot);
+    server.begin();
+
+
+
+
+
+
   //setupt motion detection
   mpu.setHighPassFilter(MPU6050_HIGHPASS_0_63_HZ);
   mpu.setMotionDetectionThreshold(1);
@@ -34,6 +61,9 @@ void setup(void) {
 }
 
 void loop() {
+
+    dnsServer.processNextRequest();
+    server.handleClient();
 
   //if(mpu.getMotionInterruptStatus()) {
     /* Get new sensor events with the readings */
