@@ -4,6 +4,8 @@
 #include "WebServer.h"
 #include <DNSServer.h>
 #include <WebSocketsServer.h>
+#include <LittleFS.h>
+#include <FS.h>
 
 
 // MotionApps / I2Cdev headers provide DMP-capable MPU6050 class
@@ -99,11 +101,25 @@ void calculateCoordinates(float* ypr, double distance, int16_t* x, int16_t* y) {
     double tempX, tempY;
     tempX = (distance * sin(ypr[0])); // find the cm from center were pointing
     tempX = (abs(tempX) > screenWidth/2) ? ( (tempX > 0) ? screenWidth/2 : -screenWidth/2 ) : tempX; // Clamp x to screen bounds, W readability, the code documents itself type shiiii
-    *x = mapDouble(tempX, -screenWidth/2, screenWidth/2, 0, 800); // map to screen coordinates assuming 600px width
+    *x = mapDouble(tempX, -screenWidth/2, screenWidth/2, 0, 1593); // map to screen coordinates assuming 600px width
     tempY = (distance * sin(ypr[1] * 2)); // find the cm from center were pointing
     tempY = (abs(tempY) > screenHeight/2) ? ( (tempY > 0) ? screenHeight/2 : -screenHeight/2 ) : tempY; // Clamp y to screen bounds
-    *y = mapDouble(tempY, -screenHeight/2, screenHeight/2, (float)0, (float)600); // map to screen coordinates assuming 400px height
+    *y = mapDouble(tempY, -screenHeight/2, screenHeight/2, (float)800, (float)0); // map to screen coordinates assuming 400px height
 
+}
+
+void sendFile()
+{
+  String url = server.uri();
+  String type = "text/";
+  if(url.indexOf('.') >= 0) type.concat(url.substring(url.indexOf('.')+1));
+  else type.concat("html");
+  if(LittleFS.exists(url)) {
+    File file = LittleFS.open(url, "r");
+    server.streamFile(file, type);
+    file.close();
+  }
+  else server.send(404, "text", url+" not found");
 }
 
 void setup() {
@@ -121,11 +137,12 @@ void setup() {
 //Start of the website on the 32
     WiFi.mode(WIFI_AP);
     WiFi.softAP("Draw");
-    WiFi.AP.enableDhcpCaptivePortal();
+    //WiFi.AP.enableDhcpCaptivePortal();
 
 
-    dnsServer.start();
+    dnsServer.start(80, "*", WiFi.softAPIP());
     server.on("/", handleRoot);
+    server.onNotFound(sendFile);
     server.begin();
 
     webSocket.begin();
@@ -134,7 +151,7 @@ void setup() {
     pinMode(ECHO, INPUT);
     pinMode(TRIG, OUTPUT);
 
-
+    LittleFS.begin(true);
 
 
   //setupt motion detection
@@ -228,7 +245,7 @@ void loop() {
     Serial.println("Payload: " + payload);
 
     webSocket.sendTXT(0, payload);
-    //delay(50);
+    delay(20);
   }
   
   // Clears the trigPin

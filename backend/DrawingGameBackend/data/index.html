@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navigation Bar</title>
+    <link rel="stylesheet" href="./style/css/stylesheet.css">
+</head>
+<body>
+    <div class="nav-container">
+        <div class="nav-bar">
+
+            <!-- Brush -->
+            <div class="tool-group">
+                <div class="tool" id="brush">
+                    <img src="./style/images/brush.png" alt="Brush" class="tool-image">
+                </div>
+                <div class="counter-controls">
+                    <button class="tool" id="brush_left" onclick="decrementBrush()">‹</button>
+                    <input type="text" class="counter-display" id="brushSize" value="1" readonly>
+                    <button class="tool" id="brush_right" onclick="incrementBrush()">›</button>
+                </div>
+            </div>
+
+
+            <!-- Eraser -->
+            <div class="tool-group">
+                <div class="tool" id="eraser">
+                    <img src="./style/images/eraser.png" alt="Eraser" class="tool-image">
+                </div>
+                <div class="counter-controls">
+                    <button class="tool" id="eraser_left" onclick="decrementEraser()">‹</button>
+                    <input type="text" class="counter-display" id="eraserSize" value="1" readonly>
+                    <button class="tool" id="eraser_right" onclick="incrementEraser()">›</button>
+                </div>
+            </div>
+
+
+            
+            <div class="divider"></div>
+
+
+            <!-- Color -->
+            <div class="color-selector">
+                <div class="color-controls" id="color">
+                    <button class="tool" id="color_left" onclick="previousColor()">‹</button>
+                    <div class="color-display" id="colorDisplay"></div>
+                    <button class="tool" id="color_right" onclick="nextColor()">›</button>
+                </div>
+                <div class="color-label" id="colorLabel">COLOR 1/8</div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+   <!--This is the start of our custom cursor -->
+<div id="customCursor"></div>
+ <!--This is the end of our custom cursor -->
+    <div class="drawing_canvas">
+            <canvas id="canvas"></canvas>
+    </div>
+
+
+    <script src="./style/script/javascript.js"></script>
+</body>
+</html>

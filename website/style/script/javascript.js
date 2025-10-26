@@ -140,3 +140,53 @@ function checkDraw() {
 
 // Initialize on page load
 updateColor();
+
+// --- WebSocket remote drawing support ---
+// Connect to the ESP32 WebSocket server. Default AP IP for ESP in AP mode is 192.168.4.1
+// change the URL if your device is on a different IP or domain.
+let ws;
+try {
+    ws = new WebSocket('ws://192.168.4.1:81/');
+    ws.addEventListener('open', () => console.log('WebSocket connected'));
+    ws.addEventListener('close', () => console.log('WebSocket closed'));
+    ws.addEventListener('error', (e) => console.warn('WebSocket error', e));
+    ws.addEventListener('message', (ev) => {
+        // Expecting payload like: "<x> <y> <z>" e.g. "123 456 0.12"
+        const text = (ev.data || '').toString().trim();
+        if (!text) return;
+        const parts = text.split(/\s+/);
+        if (parts.length < 2) {
+            console.log('WS payload not understood:', text);
+            return;
+        }
+        const rx = parseInt(parts[0]);
+        const ry = parseInt(parts[1]);
+        const rz = parts.length >= 3 ? parseInt(parts[2]) : 0;
+
+        if (Number.isFinite(rx) && Number.isFinite(ry)) {
+            
+        }
+    });
+} catch (e) {
+    console.warn('Failed to create WebSocket', e);
+}
+
+function drawRemote(remoteX, remoteY, remoteZ) {
+    // The server sends coordinates in a virtual space (your ESP code maps to 0..800, 0..600).
+    // Map those to the actual canvas pixel size so drawings line up.
+    const serverW = 800; // adjust if your firmware uses different range
+    const serverH = 600;
+
+    const cx = Math.round(remoteX * canvas.width / serverW);
+    const cy = Math.round(remoteY * canvas.height / serverH);
+
+    // Draw a small circle at the received cursor location. Use current color/brushSize.
+    ctx.save();
+    ctx.beginPath();
+    ctx.fillStyle = eraseSelected ? '#ffffff' : colors[currentColorIndex];
+    // If remoteZ (pressure) is provided, use it to influence size slightly
+    const radius = Math.max(1, brushSize + (Number.isFinite(remoteZ) ? Math.abs(remoteZ) * 0.5 : 0));
+    ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+}
