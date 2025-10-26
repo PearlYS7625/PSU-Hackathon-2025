@@ -15,6 +15,22 @@ const colors = [
 
 
 
+//this is the start of potentially making a custom cursor given the x and y
+//we gotta constantly update this like every millisecond 
+const customCursor = document.getElementById('customCursor');
+
+function updateCursorPosition(x, y) {
+    customCursor.style.left = `${x}px`;
+    customCursor.style.top = `${y}px`;
+}
+
+// Example: Assuming you receive x and y coordinates from your sensor data processing
+// In a real application, this would be called frequently with new sensor data
+// updateCursorPosition(newX, newY);
+//end of cursor
+
+
+
 const canvas = document.querySelector("canvas");
 const toolBtns = document.querySelectorAll(".tool"); //24:28
 const ctx = canvas.getContext("2d");
